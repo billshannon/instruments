@@ -1,9 +1,8 @@
 extends ../layout
-
 block content
     h1.
-        Instrument ID #{instrument._id}
-    form#formEditInstrument(name='addInstrument', method='post', action='/instruments/#{instrument._id}/edit')
+        #{instrument._id}
+    form#formEditInstrument(name='updateInstrument', method='post', action='/instruments/#{instrument._id}/edit', enctype='application/x-www-form-urlencoded')
         p Make:
             input#inputMake(type='text', value='#{instrument.make}', name='make')
         p Model:

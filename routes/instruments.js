@@ -69,29 +69,6 @@ router.get('/new', function (req, res) {
     res.render('instruments/new', {title: 'Add new instrument'})
 });
 
-//router middleware to find and validate :id
-router.param('id', function (req, res, next, id) {
-    mongoose.model('Instrument').findById(id, function (err, instrument) {
-        if (err) {
-            console.log(id + ' was not found');
-            res.status(404);
-            var err = new Error('Not Found');
-            err.status = 404;
-            res.format({
-                html: function () {
-                    next(err);
-                },
-                json: function () {
-                    res.json({message: err.status + ' ' + err});
-                }
-            });
-        } else {
-            console.log(instrument);
-            req.id = id;
-            next()
-        }
-    })
-});
 
 router.route('/:id')
     .get(function (req, res) {
@@ -143,19 +120,19 @@ router.route('/:id/edit')
         var model = req.body.model;
         var year = req.body.year;
         var price = req.body.price;
-        mongoose.model('Instrument').findByID(req.id, function (err, instrument) {
+        mongoose.model('Instrument').findById(req.id, function (err, instrument) {
             instrument.update({
                 make: make,
                 model: model,
                 year: year,
                 price: price
-            }, function (err, instrumentID) {
+            }, function (err, instrument) {
                 if (err) {
                     res.send("There was a problem updating the instrument to the database: " + err);
                 } else {
                     res.format({
                         html: function () {
-                            res.redirect('/instruments/' + instrument._ID)
+                            res.redirect('/instruments/')
                         },
                         json: function () {
                             res.json(instrument)
@@ -193,5 +170,29 @@ router.route('/:id/edit')
             }
         });
     });
+
+//router middleware to find and validate :id
+router.param('id', function (req, res, next, id) {
+    mongoose.model('Instrument').findById(id, function (err, instrument) {
+        if (err) {
+            console.log(id + ' was not found');
+            res.status(404);
+            var err = new Error('Not Found');
+            err.status = 404;
+            res.format({
+                html: function () {
+                    next(err);
+                },
+                json: function () {
+                    res.json({message: err.status + ' ' + err});
+                }
+            });
+        } else {
+            console.log(instrument);
+            req.id = id;
+            next()
+        }
+    })
+});
 
 module.exports = router;
