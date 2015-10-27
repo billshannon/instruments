@@ -3,7 +3,7 @@ extends ../layout
 block content
     h1.
         Instrument ID #{instrument._id}
-    form(action='/instruments/#{instrument._id}/edit', method='post', name='updateInstrument', enctype='application/x-www-form-urlencoded')
+    form#formEditInstrument(name='addInstrument', method='post', action='/instruments/#{instrument._id}/edit')
         p Make:
             input#inputMake(type='text', value='#{instrument.make}', name='make')
         p Model:
@@ -15,5 +15,4 @@ block content
         p
             input(type='hidden', value='PUT', name='_method')
         p
-            button#btnSubmit(type='submit').
-                Update
+            button#btnSubmit(type='submit') Update
